@@ -25,20 +25,23 @@
 
 #include <stddef.h>
 
+typedef void (*FreeElementFunction)(void *);
+typedef void (*PrintElementFunction)(const void *const);
+
 typedef struct {
 	size_t size;
 	size_t capacity;
 	void *data;
 	size_t elementSize;
 
-	void (*freeElement)(void *);
-	void (*printElement)(void *);
+	FreeElementFunction freeElement;
+	PrintElementFunction printElement;
 } Vector;
 
 
 Vector vectorCreate(const size_t elementSize,
-                    void (*freeElementFunction)(void *),
-                    void (*printElementFunction)(void *));
+                    FreeElementFunction freeElementFunction,
+                    PrintElementFunction printElementFunction);
 
 void *vectorPushBack(Vector *vector, const void *const element);
 void *vectorGet(const Vector *const vector, const size_t index);

@@ -44,8 +44,8 @@ int main(void)
 }
 
 Vector vectorCreate(const size_t elementSize,
-                    void (*freeElementFunction)(void *),
-                    void (*printElementFunction)(void *))
+                    FreeElementFunction freeElementFunction,
+                    PrintElementFunction printElementFunction)
 {
 	Vector vector = {
 	    .elementSize = elementSize,
