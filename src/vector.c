@@ -98,6 +98,27 @@ void vectorClear(Vector *vector)
 	vector->data     = NULL;
 }
 
+Vector vectorStringSplit(const char *const string, const char *const delimiters)
+{
+	Vector vector
+	    = vectorCreate(sizeof(char *), free, vectorStringStdPrint);
+
+	char *stringClone = strdup(string);
+	if (stringClone == NULL) {
+		return vector;
+	}
+
+	for (char *token = strtok(stringClone, delimiters); token != NULL;
+	     token       = strtok(NULL, delimiters)) {
+		const void *const t = strdup(token);
+		vectorPushBack(&vector, &t);
+	}
+
+	free(stringClone);
+
+	return vector;
+}
+
 void vectorPrint(FILE *file, const Vector vector)
 {
 	fprintf(file, "[");
