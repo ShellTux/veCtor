@@ -29,6 +29,22 @@
 #include <string.h>
 #include <time.h>
 
+static const char *const strings[] = {
+    "foo",
+    "bar",
+    "foobar",
+};
+
+int main(void)
+{
+	printf("\nVector of Ints\n");
+	vectorTestInts(10);
+	printf("\nVector of Strings\n");
+	vectorTestStrings(strings, sizeof(strings) / sizeof(strings[0]));
+
+	return 0;
+}
+
 void vectorTestInts(const size_t size)
 {
 	srand(time(NULL));

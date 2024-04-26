@@ -9,7 +9,7 @@ OBJ_DIR         = obj
 PANDOC_DATA_DIR = pandoc
 SRC_DIR         = src
 TARGETS_DIR     = build
-TARGETS         = vector
+TARGETS         = test
 
 SOURCES := $(shell find $(SRC_DIR) \
 	   -type f \
@@ -390,8 +390,8 @@ $(OBJ_DIR)/%.cpp.o: %.cpp $(HEADERS)
 
 # TODO: Add Parallel Compilation
 
-_SOURCES = vector test
-vector: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.c.o)
+_SOURCES = test vector
+test: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.c.o)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # }}}
