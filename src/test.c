@@ -29,6 +29,9 @@
 #include <string.h>
 #include <time.h>
 
+#define COMMAND "COMMAND ARG1 ARG2 ARG3"
+#define COMMAND_DELIMITERS " \n"
+
 static const char *const strings[] = {
     "foo",
     "bar",
@@ -77,4 +80,8 @@ void vectorTestStrings(const char *const *const strings, const size_t stringsN)
 	vectorPrint(stdout, vector);
 
 	vectorClear(&vector);
+
+	printf("\nVector From Splitting a string\n");
+	Vector command = vectorStringSplit(COMMAND, COMMAND_DELIMITERS);
+	vectorPrint(stdout, command);
 }
