@@ -24,6 +24,7 @@
  ***************************************************************************/
 
 #include <stddef.h>
+#include <stdio.h>
 
 typedef void (*FreeElementFunction)(void *);
 typedef void (*PrintElementFunction)(const void *const);
@@ -48,5 +49,19 @@ void *vectorGet(const Vector *const vector, const size_t index);
 void vectorClear(Vector *vector);
 Vector vectorStringSplit(const char *const string,
                          const char *const delimiters);
+void vectorPrint(FILE *file, const Vector vector);
+
+#define PRIMITIVE_TYPES                                 \
+	WRAPPER(char *, vectorStringStdPrint, "\"%s\"") \
+	WRAPPER(int, vectorIntStdPrint, "%d")           \
+	WRAPPER(float, vectorFloatStdPrint, "%f")       \
+	WRAPPER(double, vectorDoubleStdPrint, "%f")
+
+void vectorMemoryStdPrint(const void *const element);
+
+#define WRAPPER(TYPE, FUNCTION, FORMAT) \
+	void FUNCTION(const void *const element);
+PRIMITIVE_TYPES
+#undef WRAPPER
 
 #endif // !VECTOR_H

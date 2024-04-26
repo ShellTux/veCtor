@@ -34,7 +34,7 @@ void vectorTestInts(const size_t size)
 	srand(time(NULL));
 	Vector vector;
 
-	vector = vectorCreate(sizeof(int), NULL, NULL);
+	vector = vectorCreate(sizeof(int), NULL, vectorIntStdPrint);
 
 	for (size_t i = 0; i < size; ++i) {
 		const int randomValue = rand() % 10;
@@ -43,15 +43,13 @@ void vectorTestInts(const size_t size)
 
 	printf("\n");
 
-	for (size_t i = 0; i < vector.size; ++i) {
-		const int element = *(int *) vectorGet(&vector, i);
-		printf("vector[%zu] = %02d\n", i, element);
-	}
+	vectorPrint(stdout, vector);
 }
 
 void vectorTestStrings(const char *const *const strings, const size_t stringsN)
 {
-	Vector vector = vectorCreate(sizeof(char *), free, NULL);
+	Vector vector
+	    = vectorCreate(sizeof(char *), free, vectorStringStdPrint);
 
 	for (size_t i = 0; i < stringsN; ++i) {
 		const char *const string = strdup(strings[i]);
@@ -60,10 +58,7 @@ void vectorTestStrings(const char *const *const strings, const size_t stringsN)
 
 	printf("\n");
 
-	for (size_t i = 0; i < vector.size; ++i) {
-		const char *const element = *(char **) vectorGet(&vector, i);
-		printf("vector[%zu] = %s\n", i, element);
-	}
+	vectorPrint(stdout, vector);
 
 	vectorClear(&vector);
 }

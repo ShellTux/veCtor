@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include "vector.h"
+
 #include "test.h"
 
 #include <stdio.h>
@@ -114,3 +115,33 @@ void vectorClear(Vector *vector)
 	vector->capacity = 0;
 	vector->data     = NULL;
 }
+
+void vectorPrint(FILE *file, const Vector vector)
+{
+	fprintf(file, "[");
+	if (vector.data != NULL) {
+		for (size_t i = 0; i < vector.size; ++i) {
+			if (i > 0) {
+				fprintf(file, ", ");
+			}
+
+			const void *const element = vectorGet(&vector, i);
+			if (vector.printElement == NULL) {
+				vectorMemoryStdPrint(element);
+			} else {
+				vector.printElement(element);
+			}
+		}
+	}
+	fprintf(file, "]\n");
+}
+
+void vectorMemoryStdPrint(const void *const element) {}
+
+#define WRAPPER(TYPE, FUNCTION, FORMAT)                     \
+	void FUNCTION(const void *const element)            \
+	{                                                   \
+		fprintf(stdout, FORMAT, *(TYPE *) element); \
+	}
+PRIMITIVE_TYPES
+#undef WRAPPER
