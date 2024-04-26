@@ -142,8 +142,19 @@ void vectorPrint(FILE *file, const Vector vector)
 
 void vectorMemoryStdPrint(FILE *file,
                           const void *const element,
-                          const size_t elementSize) {}
+                          const size_t elementSize)
+{
+	const unsigned char *const ptr = element;
 
+	fprintf(file, "0x");
+	for (int i = elementSize - 1; i >= 0; --i) {
+		if (ptr[i] == 0) {
+			continue;
+		}
+
+		fprintf(file, "%X", ptr[i]);
+	}
+}
 
 #define WRAPPER(TYPE, FUNCTION, FORMAT)                   \
 	void FUNCTION(FILE *file,                         \
