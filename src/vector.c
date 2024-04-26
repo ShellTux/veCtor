@@ -37,6 +37,7 @@ static const char *const strings[] = {
 
 int main(void)
 {
+	printf("\nVector of Ints\n");
 	vectorTestInts(10);
 	printf("\nVector of Strings\n");
 	vectorTestStrings(strings, sizeof(strings) / sizeof(strings[0]));

@@ -37,7 +37,7 @@ void vectorTestInts(const size_t size)
 	vector = vectorCreate(sizeof(int), NULL, vectorIntStdPrint);
 
 	for (size_t i = 0; i < size; ++i) {
-		const int randomValue = rand() % 10;
+		const int randomValue = rand() % 1000;
 		vectorPushBack(&vector, &randomValue);
 	}
 
