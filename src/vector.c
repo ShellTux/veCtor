@@ -127,21 +127,31 @@ void vectorPrint(FILE *file, const Vector vector)
 
 			const void *const element = vectorGet(&vector, i);
 			if (vector.printElement == NULL) {
-				vectorMemoryStdPrint(element);
+				vectorMemoryStdPrint(file,
+				                     element,
+				                     vector.elementSize);
 			} else {
-				vector.printElement(element);
+				vector.printElement(file,
+				                    element,
+				                    vector.elementSize);
 			}
 		}
 	}
 	fprintf(file, "]\n");
 }
 
-void vectorMemoryStdPrint(const void *const element) {}
+void vectorMemoryStdPrint(FILE *file,
+                          const void *const element,
+                          const size_t elementSize) {}
 
-#define WRAPPER(TYPE, FUNCTION, FORMAT)                     \
-	void FUNCTION(const void *const element)            \
-	{                                                   \
-		fprintf(stdout, FORMAT, *(TYPE *) element); \
+
+#define WRAPPER(TYPE, FUNCTION, FORMAT)                   \
+	void FUNCTION(FILE *file,                         \
+	              const void *const element,          \
+	              const size_t elementSize)           \
+	{                                                 \
+		(void) elementSize;                       \
+		fprintf(file, FORMAT, *(TYPE *) element); \
 	}
 PRIMITIVE_TYPES
 #undef WRAPPER

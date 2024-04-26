@@ -27,7 +27,9 @@
 #include <stdio.h>
 
 typedef void (*FreeElementFunction)(void *);
-typedef void (*PrintElementFunction)(const void *const);
+typedef void (*PrintElementFunction)(FILE *file,
+                                     const void *const,
+                                     const size_t);
 
 typedef struct {
 	size_t size;
@@ -57,10 +59,14 @@ void vectorPrint(FILE *file, const Vector vector);
 	WRAPPER(float, vectorFloatStdPrint, "%f")       \
 	WRAPPER(double, vectorDoubleStdPrint, "%f")
 
-void vectorMemoryStdPrint(const void *const element);
+void vectorMemoryStdPrint(FILE *file,
+                          const void *const element,
+                          const size_t elementSize);
 
-#define WRAPPER(TYPE, FUNCTION, FORMAT) \
-	void FUNCTION(const void *const element);
+#define WRAPPER(TYPE, FUNCTION, FORMAT)          \
+	void FUNCTION(FILE *file,                \
+	              const void *const element, \
+	              const size_t elementSize);
 PRIMITIVE_TYPES
 #undef WRAPPER
 
