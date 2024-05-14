@@ -45,6 +45,14 @@ int main(void)
 	printf("\nVector of Strings\n");
 	vectorTestStrings(strings, sizeof(strings) / sizeof(strings[0]));
 
+	const Vector vector = vectorStringSplit("foo,bar,foobar", ",");
+	printf("\nWritting vector to a string:\n");
+	char *string = vectorString(vector);
+	if (string != NULL) {
+		printf("%s\n", string);
+		free(string);
+	}
+
 	return 0;
 }
 

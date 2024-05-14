@@ -22,9 +22,15 @@
 
 #include "vector.h"
 
+#include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+static const Vector INVALID_VECTOR = {0};
+
+static char *trim(char *string);
 
 Vector vectorCreate(const size_t elementSize,
                     FreeElementFunction freeElementFunction,
@@ -143,6 +149,62 @@ void vectorPrint(FILE *file, const Vector vector)
 	fprintf(file, "]\n");
 }
 
+char *vectorString(const Vector vector)
+{
+	if (memcmp(&vector, &INVALID_VECTOR, sizeof(Vector)) == 0) {
+		return NULL;
+	}
+
+#ifdef VECTOR_STRING_FILE_IMPLEMENTATION
+	FILE *tempFile = fopen(VECTOR_TEMP_FILE, "wb");
+	if (tempFile == NULL) {
+		fprintf(stderr,
+		        "Failed to open file: \"%s\"\n",
+		        VECTOR_TEMP_FILE);
+		return NULL;
+	}
+
+	vectorPrint(tempFile, vector);
+	fclose(tempFile);
+
+	tempFile = fopen(VECTOR_TEMP_FILE, "rb");
+	if (tempFile == NULL) {
+		fprintf(stderr,
+		        "Failed to open file: \"%s\"\n",
+		        VECTOR_TEMP_FILE);
+		return NULL;
+	}
+
+	fseek(tempFile, 0, SEEK_END);
+	const unsigned long fileSize = ftell(tempFile);
+	rewind(tempFile);
+
+	char *const buffer = malloc(fileSize + 1);
+	if (buffer == NULL) {
+		fprintf(stderr, "Error allocating memory\n");
+		return NULL;
+	}
+
+	if (fread(buffer, 1, fileSize, tempFile) != fileSize) {
+		fprintf(stderr,
+		        "Error reading file: \"%s\"\n",
+		        VECTOR_TEMP_FILE);
+		free(buffer);
+		return NULL;
+	}
+
+	buffer[fileSize] = '\0';
+
+	char *const string = strdup(trim(buffer));
+	free(buffer);
+
+	return string;
+#else
+	#error "VectorString using Strings not yet implemented"
+	assert(0 && "TODO: VectorString using Strings not yet implemented!");
+#endif
+}
+
 void vectorMemoryStdPrint(FILE *file,
                           const void *const element,
                           const size_t elementSize)
@@ -169,3 +231,47 @@ void vectorMemoryStdPrint(FILE *file,
 	}
 PRIMITIVE_TYPES
 #undef WRAPPER
+
+static char *trim(char *string)
+{
+	size_t length = 0;
+	char *frontP  = string;
+	char *endP    = NULL;
+
+	if (string == NULL) {
+		return NULL;
+	}
+	if (string[0] == '\0') {
+		return string;
+	}
+
+	length = strlen(string);
+	endP   = string + length;
+
+	/* Move the front and back pointers to address the first non-whitespace
+   * characters from each end.
+   */
+	while (isspace((unsigned char) *frontP)) {
+		++frontP;
+	}
+	if (endP != frontP) {
+		while (isspace((unsigned char) *(--endP)) && endP != frontP) {}
+	}
+
+	if (frontP != string && endP == frontP) *string = '\0';
+	else if (string + length - 1 != endP) *(endP + 1) = '\0';
+
+	/* Shift the string so that it starts at str so that if it's dynamically
+   * allocated, we can still free it on the returned pointer.  Note the reuse
+   * of endp to mean the front of the string buffer now.
+   */
+	endP = string;
+	if (frontP != string) {
+		while (*frontP) {
+			*endP++ = *frontP++;
+		}
+		*endP = '\0';
+	}
+
+	return string;
+}
