@@ -26,6 +26,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#define VECTOR_TEMP_FILE "/tmp/vector_temp"
+#define VECTOR_STRING_FILE_IMPLEMENTATION
+
 typedef void (*FreeElementFunction)(void *);
 typedef void (*PrintElementFunction)(FILE *file,
                                      const void *const,
@@ -52,6 +55,7 @@ void vectorClear(Vector *vector);
 Vector vectorStringSplit(const char *const string,
                          const char *const delimiters);
 void vectorPrint(FILE *file, const Vector vector);
+char *vectorString(const Vector vector);
 
 #define PRIMITIVE_TYPES                                 \
 	WRAPPER(char *, vectorStringStdPrint, "\"%s\"") \
